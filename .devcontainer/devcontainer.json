@@ -1,0 +1,88 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/docker-existing-docker-compose
+{
+  "name": "MainApp Development",
+
+  // Update the 'dockerComposeFile' list if you have more compose files or use different names.
+  // The .devcontainer/docker-compose.yml file contains any overrides you need/want to make.
+  "dockerComposeFile": ["../docker-compose.yml", "docker-compose.yml"],
+
+  // The 'service' property is the name of the service for the container that VS Code should
+  // use. Update this value and .devcontainer/docker-compose.yml to the real service name.
+  "service": "app",
+
+  // The optional 'workspaceFolder' property is the path VS Code should open by default when
+  // connected. This is typically a file mount in .devcontainer/docker-compose.yml
+  "workspaceFolder": "/home/${localEnv:USER}/${localWorkspaceFolderBasename}",
+
+  // You can use the mounts property to persist the user profile (to keep things like shell
+  // history) in your dev container across rebuilds.
+  "mounts": ["source=profile,target=/home/${localEnv:USER},type=volume"],
+
+  // Features to add to the dev container. More info: https://containers.dev/features.
+  "features": {
+    // alpine-ohmyzsh
+    "ghcr.io/cirolosapio/devcontainers-features/alpine-ohmyzsh:0": {
+      "plugins": "alias-tips zsh-interactive-cd bundler gh git npm rails rake rake-fast ruby ssh-agent starship zsh-navigation-tools"
+    },
+    // alpine-starship
+    "ghcr.io/cirolosapio/devcontainers-features/alpine-starship:0": {}
+  },
+
+  // Use 'forwardPorts' to make a list of ports inside the container available locally.
+  // "forwardPorts": [],
+
+  // Uncomment the next line if you want start specific services in your Docker Compose config.
+  // "runServices": [],
+
+  // Uncomment the next line if you want to keep your containers running after VS Code shuts down.
+  "shutdownAction": "stopCompose",
+
+  // Uncomment the next line to run commands after the container is created.
+  "postCreateCommand": [".devcontainer/devenv-entrypoint.sh"],
+
+  // Configure tool-specific properties.
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "aki77.html-erb",
+        "aki77.rails-db-schema",
+        "aki77.rails-routes",
+        "anykeyh.simplecov-vscode",
+        "castwide.solargraph",
+        "christian-kohler.npm-intellisense",
+        "clinyong.vscode-css-modules",
+        "connorshea.vscode-ruby-test-adapter",
+        "craigmaslowski.erb",
+        "dbaeumer.vscode-eslint",
+        "dotenv.dotenv-vscode",
+        "eamodio.gitlens",
+        "editorconfig.editorconfig",
+        "emilast.LogFileHighlighter",
+        "esbenp.prettier-vscode",
+        "formulahendry.auto-rename-tag",
+        "groksrc.ruby",
+        "hbenl.vscode-test-explorer",
+        "jemmyw.rails-fast-nav",
+        "kaiwood.endwise",
+        "KoichiSasada.vscode-rdbg",
+        "manuelpuyol.erb-linter",
+        "MichalZaporski.simple-yard-snippets",
+        "ms-vscode.test-adapter-converter",
+        "ms-vscode.vscode-typescript-next",
+        "ngouy.vscode-gemfile-infos",
+        "pavlitsky.yard",
+        "redhat.vscode-yaml",
+        "shopify.ruby-lsp",
+        "tavo.rails-schema",
+        "vunguyentuan.vscode-css-variables",
+        "vunguyentuan.vscode-postcss",
+        "wmaurer.change-case",
+        "zneuray.erb-vscode-snippets"
+      ]
+    }
+  }
+
+  // Uncomment to connect as an existing user other than the container default. More info: https://aka.ms/dev-containers-non-root.
+  // "remoteUser": "devcontainer"
+}

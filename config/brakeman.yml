@@ -1,0 +1,8 @@
+---
+:run_all_checks: true
+:pager: false
+:report_progress: false
+:output_files:
+- coverage/brakeman-output.json
+- "/dev/stdout"
+:output_color: :force

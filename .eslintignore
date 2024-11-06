@@ -1,0 +1,8 @@
+node_modules/
+public/
+**/*.d.ts
+*.html
+*.css
+
+# ignore all files that end with .test.js
+**/*.test.js

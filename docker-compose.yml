@@ -1,0 +1,133 @@
+services:
+  app:
+    profiles: [ dev ]
+    build:
+      context: ./
+      dockerfile: ./docker/Dockerfile.dev
+      args:
+        - APPNAME=${COMPOSE_PROJECT_NAME}
+    image: lucasbertuleza/${COMPOSE_PROJECT_NAME}
+    container_name: ${COMPOSE_PROJECT_NAME}
+    entrypoint: dockerize -wait tcp://database:3306 -wait tcp://redis:6379 -wait tcp://cache-server:6379 -timeout 30s docker-entrypoint.sh
+    command: ash -c "rm -f tmp/pids/server.pid && overmind start"
+    ports:
+      - '3000:3000'
+      - '3036:3036'
+      - '3037:3037'
+    working_dir: /home/${USERNAME}/${COMPOSE_PROJECT_NAME}
+    volumes:
+      - .:/home/${USERNAME}/${COMPOSE_PROJECT_NAME}
+      - bundle_cache:/usr/local/bundle
+    env_file: .env
+    environment:
+      - RAILS_ENV=development
+    depends_on:
+      - database
+      - redis
+      - redis-cache
+    stdin_open: true
+    networks:
+      - net
+      #- notification_service_net
+    #tty: true (desabilitado para funcionar com overmind start)
+
+  database:
+    profiles: [ dev, test ]
+    image: mysql:9.1.0
+    container_name: ${COMPOSE_PROJECT_NAME}_database
+    command: --max_allowed_packet=128M
+    tty: true
+    restart: on-failure
+    volumes:
+      - mysql_data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DATABASE_PASSWORD}
+    mem_limit: 512m
+    networks:
+      - net
+
+  # https://redis.io/docs/latest/operate/oss_and_stack/management/config-file/
+  redis:
+    profiles: [ dev ]
+    image: redis:alpine
+    container_name: ${COMPOSE_PROJECT_NAME}_redis_server
+    command: redis-server --appendonly yes
+    restart: on-failure
+    ports:
+      - '6379:6379'
+    volumes:
+      - 'redis_data:/data'
+    mem_limit: 128m
+    networks:
+      - net
+
+
+  # https://redis.io/docs/latest/operate/oss_and_stack/management/config-file/
+  redis-cache:
+    profiles: [ dev ]
+    hostname: cache-server
+    image: redis:alpine
+    container_name: ${COMPOSE_PROJECT_NAME}_redis_cache_server
+    command: redis-server --maxmemory-policy allkeys-lfu --save
+    restart: on-failure
+    ports:
+      - '6380:6379'
+    mem_limit: 128m
+    networks:
+      - net
+
+  # http://localhost:7900/?autoconnect=1&resize=scale&password=secret⁠
+  selenium:
+    profiles: [ test, selenium ]
+    image: selenium/standalone-firefox:latest
+    container_name: ${COMPOSE_PROJECT_NAME}_selenium_firefox
+    shm_size: 2g
+    ports:
+      - '4444:4444'
+      - '7900:7900'
+    networks:
+      - net
+
+  mailserver:
+    profiles: [ optional ]
+    image: stpaquet/alpinemailcatcher:latest
+    container_name: ${COMPOSE_PROJECT_NAME}_mailserver
+    restart: on-failure:5
+    environment:
+      - MAIL_LIMIT=20 # default is 50
+      - TIMEZONE=America/Sao_Paulo # default is UTC
+    ports:
+      - '1080:1080'
+    networks:
+      - net
+
+  redisinsight:
+    profiles: [ optional ]
+    image: redis/redisinsight:latest
+    container_name: ${COMPOSE_PROJECT_NAME}_redisinsight
+    ports:
+      - '5540:5540'
+    volumes:
+      - 'redisinsight_data:/data'
+
+  webdb:
+    profiles: [ optional ]
+    image: webdb/app
+    container_name: ${COMPOSE_PROJECT_NAME}_webdb
+    restart: always
+    volumes:
+      - 'webdb_data:/usr/src/app/static/version'
+    ports:
+      - '22071:22071'
+
+volumes:
+  bundle_cache:
+  mysql_data:
+  redis_data:
+  redisinsight_data:
+  webdb_data:
+
+networks:
+  net:
+  notification_service_net:
+    external: true

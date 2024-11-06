@@ -1,0 +1,126 @@
+{
+  "diffEditor.codeLens": true,
+  "diffEditor.ignoreTrimWhitespace": false,
+  "editor.cursorSmoothCaretAnimation": "on",
+  "editor.cursorStyle": "line-thin",
+  "editor.fontFamily": "JetBrains Mono, monospace",
+  "editor.fontLigatures": true,
+  "editor.fontSize": 13,
+  "editor.guides.bracketPairs": "active",
+  "editor.lineHeight": 1.6,
+  "editor.linkedEditing": true,
+  "editor.minimap.enabled": false,
+  "editor.renderLineHighlight": "gutter",
+  "editor.rulers": [100],
+  "editor.smoothScrolling": true,
+  "editor.tabSize": 2,
+  "emmet.preferences": {
+    "output.inlineBreak": 1
+  },
+  "files.simpleDialog.enable": true,
+  "files.trimFinalNewlines": true,
+  "files.trimTrailingWhitespace": true,
+  "search.exclude": {
+    "**/node_modules": true
+  },
+  "terminal.integrated.copyOnSelection": true,
+  "terminal.integrated.fontFamily": "FiraCode Nerd Font, Fira Code, JetBrains Mono, monospace",
+  "terminal.integrated.fontSize": 13,
+  "terminal.integrated.smoothScrolling": true,
+  "terminal.integrated.defaultProfile.linux": "zsh",
+  "window.zoomLevel": 1,
+  "workbench.colorTheme": "Omni",
+  "workbench.iconTheme": "material-icon-theme",
+  "workbench.list.smoothScrolling": true,
+  "workbench.productIconTheme": "material-product-icons",
+
+  /* JavaScript and TypeScript  */
+  "javascript.suggest.completeFunctionCalls": true,
+  "typescript.suggest.completeFunctionCalls": true,
+
+  /* Extensions */
+
+  "[css][javascript][typescript][javascriptreact][typescriptreact][jsonc][json][scss]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[erb]": { "editor.defaultFormatter": "manuelpuyol.erb-linter" },
+  "[gemfile][ruby]": {
+    "editor.guides.indentation": false,
+    "editor.defaultFormatter": "castwide.solargraph"
+  },
+  "[log]": { "editor.largeFileOptimizations": false },
+  "[yaml][yml]": {
+    "diffEditor.ignoreTrimWhitespace": false,
+    "editor.autoIndent": "keep",
+    "editor.defaultFormatter": "redhat.vscode-yaml",
+    "editor.insertSpaces": true,
+    "editor.quickSuggestions": {
+      "other": true,
+      "comments": false,
+      "strings": true
+    },
+    "editor.tabSize": 2
+  },
+  "auto-rename-tag.activationOnLanguage": ["*"],
+  "cssModules.camelCase": true,
+  "editor.tokenColorCustomizations": {
+    "textMateRules": [
+      {
+        "scope": "keyword.other.dotenv",
+        "settings": {
+          "foreground": "#FF000000"
+        }
+      }
+    ]
+  },
+  "emmet.includeLanguages": { "postcss": "css" },
+  "erb.erb-lint.onSave": true,
+  "files.associations": { "*.html.erb": "erb", ".env*": "dotenv" },
+  "files.defaultLanguage": "${activeEditorLanguage}",
+  "gitlens.defaultTimeFormat": null,
+  "gitlens.hovers.currentLine.over": "line",
+  "gitlens.views.commits.files.layout": "auto",
+  "material-icon-theme.activeIconPack": "react",
+  "material-icon-theme.files.associations": {
+    "Procfile.dev": "heroku",
+    "tsconfig.vite.json": "tsconfig",
+    "routes.rb": "routing"
+  },
+  "postcss.validate": false,
+  "redhat.telemetry.enabled": true,
+  "rubyLsp.enableExperimentalFeatures": false,
+  "rubyLsp.enabledFeatures": {
+    "codeActions": true,
+    "diagnostics": true,
+    "documentHighlights": true,
+    "documentLink": true,
+    "documentSymbols": true,
+    "foldingRanges": true,
+    "formatting": true,
+    "hover": true,
+    "inlayHint": true,
+    "onTypeFormatting": true,
+    "selectionRanges": true,
+    "semanticHighlighting": true,
+    "completion": true,
+    "codeLens": true,
+    "definition": true,
+    "workspaceSymbol": true,
+    "signatureHelp": true
+  },
+  "solargraph.bundlerPath": "/usr/local/bin/bundle",
+  "solargraph.diagnostics": true,
+  "solargraph.formatting": true,
+  "solargraph.logLevel": "warn",
+  "solargraph.useBundler": true,
+  "yard.spacers.afterDescription": true,
+  "yard.spacers.afterSingleTag": true,
+  "yard.spacers.afterTags": false,
+  "yard.spacers.beforeDescription": false,
+  "yard.spacers.beforeSingleTag": true,
+  "yard.spacers.beforeTags": true,
+  "yard.spacers.separateTags": true,
+  "yard.tags.author": false,
+  "yard.tags.paramNameBeforeType": true
+  /* Remote extensions (dynamically added) */
+}

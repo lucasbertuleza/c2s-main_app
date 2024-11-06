@@ -1,0 +1,78 @@
+###############################
+# BASE
+FROM ruby:3.2.6-alpine AS base
+RUN apk add --update --no-cache git mysql-dev nodejs vips
+
+###############################
+# Stage: Builder
+FROM base AS builder
+ENV BUNDLE_PATH="/usr/local/bundle"
+
+RUN apk add --update --no-cache build-base openssl-dev \
+    && wget -O /tmp/overmind.gz \
+    https://github.com/DarthSim/overmind/releases/download/v2.5.1/overmind-v2.5.1-linux-amd64.gz \
+    && gzip -d /tmp/overmind.gz \
+    && echo -e "install: --no-document\nupdate: --no-document" > /usr/local/etc/gemrc
+
+WORKDIR /app
+
+# Install gems
+COPY ["Gemfile", "Gemfile.lock", "./"]
+RUN bundle check || bundle install --jobs $(nproc) --retry 2 \
+    && rm -rf ~/.bundle/ \
+    "${BUNDLE_PATH}"/cache/*.gem \
+    "${BUNDLE_PATH}"/ruby/*/cache \
+    "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git \
+    ./tmp/cache
+
+###############################
+# Stage: Final
+FROM base AS final
+LABEL maintainer="lucascbertuleza@gmail.com"
+
+ARG APPNAME
+ENV APPNAME=${APPNAME:-main_app}
+ENV DOCKERIZE_VERSION v0.8.0
+RUN apk update --no-cache \
+    && apk add --no-cache wget openssl \
+    && wget -O - https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz | tar xzf - -C /usr/local/bin \
+    && apk del wget
+RUN apk add --update --no-cache openssh tzdata && rm -rf /tmp/* /var/tmp/*
+
+# Add packages
+RUN apk add --update --no-cache \
+    file \
+    make \
+    npm \
+    openssh \
+    tmux \
+    tzdata \
+    && rm -rf /tmp/* /var/tmp/*
+
+# Setting up new user
+ARG USER_UID=1000
+ARG USER_GID=1000
+ENV USER=rails
+RUN addgroup --gid $USER_GID $USER && adduser --uid $USER_UID -G $USER -D $USER
+WORKDIR /home/$USER/$APPNAME
+
+# Copy app with gems from former build stage
+COPY --chown=$USER:$USER --from=builder /usr/local/bundle/ruby/3.2.0/ /usr/local/bundle
+COPY --chown=$USER:$USER --from=builder /tmp/overmind /usr/local/bin
+COPY --chown=$USER:$USER ./docker/docker-entrypoint.sh /usr/local/bin
+COPY --chown=$USER:$USER . .
+
+# Make overmind and docker-entrypoint.sh executable
+RUN chmod +x /usr/local/bin/overmind /usr/local/bin/docker-entrypoint.sh
+
+# Add a script to be executed every time the container starts.
+ENTRYPOINT ["docker-entrypoint.sh"]
+
+RUN mkdir -p "/home/$USER/.vscode-server"; chown -R $USER:$USER "/home/$USER"
+VOLUME ["/home/$USER/.vscode-server"]
+
+# Switch to User
+USER $USER
+
+EXPOSE 3000 3036 3037
+CMD ["bin/rails", "server", "--port", "3000", "--binding", "ssl://0.0.0.0"]

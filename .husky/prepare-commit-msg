@@ -1,0 +1,4 @@
+# executa apenas com "git commit"
+if [ -z "$2" ]; then
+  exec < /dev/tty && npx cz --hook || true
+fi

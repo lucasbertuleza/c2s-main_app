@@ -1,0 +1,136 @@
+# The behavior of RuboCop can be controlled via the .rubocop.yml
+# configuration file. It makes it possible to enable/disable
+# certain cops (checks) and to alter their behavior if they accept
+# any parameters. The file can be placed either in your home
+# directory or in some project directory.
+#
+# RuboCop will start looking for the configuration file in the directory
+# where the inspected file is and continue its way up to the root directory.
+#
+# See https://docs.rubocop.org/rubocop/configuration
+require:
+  - standard
+  - standard-rails
+  - rubocop-capybara
+  - rubocop-factory_bot
+  - rubocop-performance
+  - rubocop-rails
+  - rubocop-rspec
+  - rubocop-rspec_rails
+inherit_gem:
+  standard: config/ruby-3.2.yml
+  standard-rails: config/base.yml
+inherit_mode:
+  merge:
+    - Include
+    - Exclude
+AllCops:
+  ActiveSupportExtensionsEnabled: true
+  TargetRubyVersion: 3.2
+  NewCops: enable
+  Exclude:
+    - "app/frontend/**/*"
+    - "bin/*"
+    - "db/**/*"
+    - "config/**/*"
+    - "script/**/*"
+    - "node_modules/**/*"
+    - "public/**/*"
+    - "vendor/**/*"
+    - "tmp/**/*"
+    - "storage/**/*"
+    - ".bundle/**/*"
+  ExtraDetails: true
+Bundler/GemComment:
+  Enabled: true
+Bundler/OrderedGems:
+  Enabled: true
+  TreatCommentsAsGroupSeparators: false
+Layout/LineLength:
+  Enabled: true
+  Max: 100
+  Details: >-
+    80 characters is recommended, but the line length is too short when working
+    in namespaces. 100 characters is a good compromise.
+Layout/FirstMethodArgumentLineBreak:
+  AllowMultilineFinalElement: true
+Layout/MultilineHashKeyLineBreaks:
+  Enabled: true
+Layout/MultilineMethodArgumentLineBreaks:
+  Enabled: true
+  AllowMultilineFinalElement: true
+Metrics/AbcSize:
+  Enabled: true
+  Max: 16
+Metrics/BlockLength:
+  Enabled: true
+  Max: 8
+  AllowedMethods:
+    - context
+    - describe
+    - it
+    - shared_examples
+    - shared_examples_for
+    - namespace
+    - draw
+    - configure
+    - group
+Metrics/ClassLength:
+  Description: "Avoid classes longer than 100 lines of code."
+  Max: 100
+  Enabled: true
+Metrics/MethodLength:
+  Description: "Avoid methods longer than 16 lines of code."
+  StyleGuide: "https://github.com/bbatsov/ruby-style-guide#short-methods"
+  Max: 16
+  Enabled: true
+Metrics/ModuleLength:
+  Description: "Avoid modules longer than 100 lines of code."
+  Max: 100
+  Enabled: true
+Metrics/ParameterLists:
+  Description: "Pass no more than four parameters into a method."
+  Max: 4
+  MaxOptionalParameters: 3
+  Enabled: true
+Naming/RescuedExceptionsVariableName:
+  Enabled: true
+  PreferredName: error
+Style/BlockDelimiters:
+  Enabled: true
+  Exclude:
+    - "spec/**/*"
+Style/Documentation:
+  Enabled: true
+  Description: "Document classes and non-namespace modules."
+  AllowedConstants:
+    - ApplicationComponent
+    - ApplicationController
+    - ApplicationDecorator
+    - ApplicationHelper
+    - ApplicationJob
+    - ApplicationMailer
+    - ApplicationPolicy
+    - ApplicationQuery
+    - ApplicationRecord
+    - ApplicationService
+    - ApplicationValidator
+    - ClassMethods
+Style/DocumentationMethod:
+  Enabled: true
+  AllowedMethods: ["method_missing", "respond_to_missing?"]
+Rails:
+  Enabled: true
+  DocumentationBaseURL: https://docs.rubocop.org/rubocop-rails
+RSpec:
+  Enabled: true
+  StyleGuideBaseURL: https://rspec.rubystyle.guide
+  DocumentationBaseURL: https://docs.rubocop.org/rubocop-rspec
+RSpec/ContextWording:
+  Prefixes:
+    - when
+    - with
+    - without
+    - quando
+    - com
+    - sem

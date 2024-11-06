@@ -1,0 +1,95 @@
+{
+  "type": "module",
+  "scripts": {
+    "prepare": "husky",
+    "rubocop": "bundle exec rubocop --autocorrect-all",
+    "erblint": "bundle exec erblint --enable-all-linters --autocorrect",
+    "build": "bin/vite build"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.3.0",
+    "@commitlint/config-conventional": "^19.2.2",
+    "@commitlint/cz-commitlint": "^19.2.0",
+    "@nabla/vite-plugin-eslint": "^2.0.4",
+    "@types/node": "^20.14.2",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/parser": "^7.18.0",
+    "@typescript/lib-dom": "npm:@types/web@^0.0.142",
+    "@vitejs/plugin-react": "^4.3.1",
+    "commitizen": "^4.3.0",
+    "commitlint": "^19.3.0",
+    "eslint": "^8.57.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-airbnb-typescript": "^18.0.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-import-resolver-alias": "^1.1.2",
+    "eslint-import-resolver-typescript": "^3.6.1",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-prettier": "^5.1.3",
+    "eslint-plugin-react": "^7.34.2",
+    "eslint-plugin-react-hooks": "^4.6.2",
+    "eslint-plugin-react-refresh": "^0.4.7",
+    "husky": "^9.0.11",
+    "inquirer": "^9.2.23",
+    "lint-staged": "^15.2.7",
+    "path": "^0.12.7",
+    "prettier": "^3.3.2",
+    "sass": "^1.77.5",
+    "typescript": "^5.4.5",
+    "vite": "^5.4.8",
+    "vite-plugin-checker": "^0.6.4",
+    "vite-plugin-rails": "^0.5.0",
+    "vite-plugin-ruby": "^5.1.0",
+    "vite-plugin-sass-glob-import": "^3.0.2",
+    "vite-tsconfig-paths": "^4.3.2"
+  },
+  "dependencies": {
+    "autoprefixer": "^10.4.19",
+    "cssnano": "^7.0.2",
+    "postcss-nested": "^6.0.1",
+    "postcss-normalize": "^10.0.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "browserslist": [
+    "defaults"
+  ],
+  "lint-staged": {
+    "./app/frontend/**/*.{js,jsx,ts,tsx}": [
+      "eslint --fix --report-unused-disable-directives --max-warnings 0"
+    ],
+    "./app/frontend/**": [
+      "prettier --ignore-unknown --write"
+    ],
+    "./{app,spec,lib}/**/*.rb": [
+      "npm run rubocop"
+    ],
+    "./app/views/**/*.{html,text,js}.erb": [
+      "npm run erblint"
+    ]
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ],
+    "rules": {
+      "subject-max-length": [
+        2,
+        "always",
+        50
+      ],
+      "scope-max-length": [
+        2,
+        "always",
+        20
+      ]
+    }
+  },
+  "config": {
+    "commitizen": {
+      "path": "@commitlint/cz-commitlint"
+    }
+  }
+}
