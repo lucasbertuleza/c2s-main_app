@@ -1,4 +1,7 @@
 class TasksController < ApplicationController
+  NOTIFICATION_ENDPOINT = URI("http://notification_service_app:3000/v1").freeze
+  NOTIFICATION_HEADERS = {"content-type" => "application/json"}.freeze
+
   before_action :set_task, only: %i[show edit update destroy]
 
   # GET /tasks
@@ -21,39 +24,55 @@ class TasksController < ApplicationController
 
   # POST /tasks
   def create
-    @task = Task.new(task_params)
-
-    if @task.save
-      redirect_to @task, notice: "Task was successfully created."
-    else
-      render :new, status: :unprocessable_entity
-    end
+    @task = Task.new(user_id: current_user.id, **task_params)
+    return (render :new, status: :unprocessable_entity) unless @task.save
+    send_notification("create", "Nova tarefa criada")
+    redirect_to @task
   end
 
   # PATCH/PUT /tasks/1
   def update
-    if @task.update(task_params)
-      redirect_to @task, notice: "Task was successfully updated.", status: :see_other
-    else
-      render :edit, status: :unprocessable_entity
-    end
+    @task.data = {}
+    return (render :edit, status: :unprocessable_entity) unless @task.update(task_params)
+    send_notification("update", "Tarefa atualizada")
+    redirect_to @task, status: :see_other
   end
 
   # DELETE /tasks/1
   def destroy
     @task.destroy!
-    redirect_to tasks_url, notice: "Task was successfully destroyed.", status: :see_other
+    redirect_to tasks_url, notice: "Tarefa excluída com sucesso", status: :see_other
   end
 
   private
 
-  # Use callbacks to share common setup or constraints between actions.
   def set_task
     @task = Task.find(params[:id])
   end
 
-  # Only allow a list of trusted parameters through.
   def task_params
-    params.require(:task).permit(:user_id, :url, :uuid, :status, :data)
+    params.require(:task).permit(:url)
+  end
+
+  # @param action [String] create | update
+  # @param info [String] desrição
+  def send_notification(action, info)
+    payload = payload_for_notification(action, info)
+    response = Net::HTTP.post(NOTIFICATION_ENDPOINT, payload, NOTIFICATION_HEADERS)
+    return (flash[:alert] = "Não foi possível salvar a tarefa.") unless response.code == "200"
+    Hutch.connect
+    Hutch.publish("scraper.task.pending", task_id: @task.uuid, url: @task.url)
+    flash[:notice] = "#{info} com sucesso."
+  rescue Net::ReadTimeout
+    flash[:alert] = "Notificação não confirmada."
+    @task.failed!
+  end
+
+  # @return [String] JSON string
+  def payload_for_notification(action, info)
+    payload = @task.as_json
+    payload[:task].merge!(action:, user: current_user.email)
+    payload[:notification] = {info:, data: payload[:task].except(:uuid)}
+    payload.to_json
   end
 end

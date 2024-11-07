@@ -1,17 +1,7 @@
 <div id="<%= dom_id task %>">
   <p>
-    <strong>User:</strong>
-    <%= task.user_id %>
-  </p>
-
-  <p>
     <strong>Url:</strong>
     <%= task.url %>
-  </p>
-
-  <p>
-    <strong>Uuid:</strong>
-    <%= task.uuid %>
   </p>
 
   <p>
@@ -20,8 +10,8 @@
   </p>
 
   <p>
-    <strong>Data:</strong>
-    <%= task.data %>
+    <strong>Dados coletados:</strong>
+    <%= task.data.presence || "" %>
   </p>
 
 </div>

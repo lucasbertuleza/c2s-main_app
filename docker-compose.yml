@@ -25,11 +25,9 @@ services:
       - database
       - redis
       - redis-cache
-    stdin_open: true
     networks:
       - net
-      #- notification_service_net
-    #tty: true (desabilitado para funcionar com overmind start)
+      - notification_service_net
 
   database:
     profiles: [ dev, test ]
@@ -46,7 +44,6 @@ services:
     networks:
       - net
 
-  # https://redis.io/docs/latest/operate/oss_and_stack/management/config-file/
   redis:
     profiles: [ dev ]
     image: redis:alpine
@@ -61,8 +58,6 @@ services:
     networks:
       - net
 
-
-  # https://redis.io/docs/latest/operate/oss_and_stack/management/config-file/
   redis-cache:
     profiles: [ dev ]
     hostname: cache-server
@@ -76,7 +71,6 @@ services:
     networks:
       - net
 
-  # http://localhost:7900/?autoconnect=1&resize=scale&password=secret⁠
   selenium:
     profiles: [ test, selenium ]
     image: selenium/standalone-firefox:latest
