@@ -1,12 +1,20 @@
-class TaskDecorator < Draper::Decorator
+class TaskDecorator < ApplicationDecorator
   delegate_all
 
-  # Define presentation-specific methods here. Helpers are accessed through
-  # `helpers` (aka `h`). You can override attributes, for example:
-  #
-  #   def created_at
-  #     helpers.content_tag :span, class: 'time' do
-  #       object.created_at.strftime("%a %m/%d/%y")
-  #     end
-  #   end
+  # @return [String]
+  def dados_formatados
+    object.data.except("url").map do |key, value|
+      "#{(key == "preco") ? "Preço" : key.capitalize}: #{value}"
+    end.join(" | ")
+  end
+
+  # @return [String]
+  def status
+    {
+      "pending" => "Pendente",
+      "processing" => "Em progresso",
+      "successful" => "Concluída",
+      "failed" => "Falha"
+    }[object.status]
+  end
 end

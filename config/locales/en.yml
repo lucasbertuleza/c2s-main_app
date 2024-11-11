@@ -37,3 +37,10 @@ en:
       title: "Login"
     sign_up:
       title: "Registre-se"
+  tasks:
+    index:
+      title_html: <h1>Tarefas</h1>
+    task:
+      url_html: "<strong>Url:</strong> %{url}"
+      status_html: '<strong>Status:</strong> <span class="status">%{status}</span>'
+      data_html: '<strong>Dados coletados:</strong> <span class="dados">%{data}</span>'

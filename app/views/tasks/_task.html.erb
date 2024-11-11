@@ -1,17 +1,13 @@
-<div id="<%= dom_id task %>">
+<div id="<%= dom_id task %>" data-uuid="<%= task.uuid %>">
   <p>
-    <strong>Url:</strong>
-    <%= task.url %>
+    <%= t(".url_html", url: task.url) %>
   </p>
 
   <p>
-    <strong>Status:</strong>
-    <%= task.status %>
+    <%= t(".status_html", status: task.status) %>
   </p>
 
   <p>
-    <strong>Dados coletados:</strong>
-    <%= task.data.presence || "" %>
+    <%= t(".data_html", data: task.dados_formatados) %>
   </p>
-
 </div>
