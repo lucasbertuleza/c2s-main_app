@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>MainApp</title>
+    <title><%= t(".title") %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
     <%= vite_client_tag %>
-    <%= vite_javascript_tag 'application' %>
+    <%= vite_javascript_tag "application" %>
     <!--
       If using a TypeScript entrypoint file:
         vite_typescript_tag 'application'
@@ -17,10 +17,22 @@
 
       Visit the guide for more information: https://vite-ruby.netlify.app/guide/rails
     -->
+    <style>
+      .flash {border: 1px solid}
+      .flash-alert {color: red; border-color: red;}
+      .flash-notice {color: green; border-color: green;}
+    </style>
 
   </head>
 
   <body>
+    <%= render "layouts/flash" %>
+    <% if logged_in? %>
+      <div>
+        <%= t(".user_html", user: current_user.email) %>
+        <%= button_to "Sair", logout_path, method: :delete, form: {style: "display:inline"} %>
+      </div>
+    <% end %>
     <%= yield %>
   </body>
 </html>

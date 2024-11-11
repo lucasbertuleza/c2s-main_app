@@ -28,6 +28,10 @@
 #       enabled: "ON"
 
 en:
+  layouts:
+    application:
+      title: "WebTask"
+      user_html: "<strong>Usuário:</strong> %{user}"
   pages:
     sign_in:
       title: "Login"

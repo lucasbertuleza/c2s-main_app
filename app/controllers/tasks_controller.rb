@@ -2,11 +2,12 @@ class TasksController < ApplicationController
   NOTIFICATION_ENDPOINT = URI("http://notification_service_app:3000/v1").freeze
   NOTIFICATION_HEADERS = {"content-type" => "application/json"}.freeze
 
-  before_action :set_task, only: %i[show edit update destroy]
+  before_action :authenticate_user
+  before_action :set_task, -> { check_owner(@task) }, only: %i[show edit update destroy]
 
   # GET /tasks
   def index
-    @tasks = Task.all
+    @tasks = Task.where(user_id: current_user.id)
   end
 
   # GET /tasks/1
@@ -27,7 +28,7 @@ class TasksController < ApplicationController
     @task = Task.new(user_id: current_user.id, **task_params)
     return (render :new, status: :unprocessable_entity) unless @task.save
     send_notification("create", "Nova tarefa criada")
-    redirect_to @task
+    render :show
   end
 
   # PATCH/PUT /tasks/1
@@ -61,10 +62,13 @@ class TasksController < ApplicationController
     response = Net::HTTP.post(NOTIFICATION_ENDPOINT, payload, NOTIFICATION_HEADERS)
     return (flash[:alert] = "Não foi possível salvar a tarefa.") unless response.code == "200"
     Hutch.connect
-    Hutch.publish("scraper.task.pending", task_id: @task.uuid, url: @task.url)
-    flash[:notice] = "#{info} com sucesso."
+    Hutch.publish("scraper.task.pending",
+      task_id: @task.uuid,
+      url: @task.url,
+      user: current_user.email)
+    flash.now[:notice] = "#{info} com sucesso."
   rescue Net::ReadTimeout
-    flash[:alert] = "Notificação não confirmada."
+    flash.now[:alert] = "Notificação não confirmada."
     @task.failed!
   end
 
