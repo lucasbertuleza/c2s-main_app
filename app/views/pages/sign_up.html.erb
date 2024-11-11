@@ -1,0 +1,17 @@
+<h1><%= t ".title" %></h1>
+
+<%= form_with(scope: :user, url: sign_up_path) do |form| %>
+  <div>
+    <%= form.label :email, style: "display: block" %>
+    <%= form.email_field :email, style: "width: 480px", required: true %>
+  </div>
+
+  <div>
+    <%= form.label :password, style: "display: block" %>
+    <%= form.password_field :password, style: "width: 480px", required: true %>
+  </div>
+
+  <div>
+    <%= form.submit "Criar conta" %>
+  </div>
+<% end %>
