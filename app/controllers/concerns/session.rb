@@ -5,7 +5,6 @@ module Session
 
   AUTHORIZATION_ENDPOINT = URI("http://authentication_service_app:3000/v1/authorization").freeze
 
-  # @return [User, nil]
   def current_user
     @_current_user ||= check_authorization
   end
@@ -37,13 +36,14 @@ module Session
     head :forbidden unless current_user? resource.user_id
   end
 
+  # @return [User, nil]
   def check_authorization
     headers = {"content-type": "application/json", Authorization: session[:token]}
     res = Net::HTTP.post AUTHORIZATION_ENDPOINT, "", headers
     return nil unless res.code == "200"
 
-    id = JSON.parse(res.body)["user_id"]
-    Struct.new(:id, *session[:user].keys, keyword_init: true).new(id:, **session[:user])
+    user_info = session[:user].merge(id: JSON.parse(res.body)["user_id"])
+    Utils::Structurize(user_info)
   end
 end
 
