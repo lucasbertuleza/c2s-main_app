@@ -10,7 +10,7 @@
 # Ignore all environment files (except templates).
 /.env*
 !/.env*.erb
-!/.env.sample
+!/.env.example
 
 # Ignore all logfiles and tempfiles.
 /log/*
@@ -43,8 +43,9 @@ node_modules
 # https://vitejs.dev/guide/env-and-mode.html#env-files
 *.local
 
-# Ignore coverage results
+# Ignore coverage results and docs
 coverage
+doc
 
 # Ignore bash history
 .devcontainer/config/zsh_history
