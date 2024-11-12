@@ -13,17 +13,17 @@
 
   // The optional 'workspaceFolder' property is the path VS Code should open by default when
   // connected. This is typically a file mount in .devcontainer/docker-compose.yml
-  "workspaceFolder": "/home/${localEnv:USER}/${localWorkspaceFolderBasename}",
+  "workspaceFolder": "/home/rails/${localWorkspaceFolderBasename}",
 
   // You can use the mounts property to persist the user profile (to keep things like shell
   // history) in your dev container across rebuilds.
-  "mounts": ["source=profile,target=/home/${localEnv:USER},type=volume"],
+  "mounts": ["source=profile,target=/home/rails,type=volume"],
 
   // Features to add to the dev container. More info: https://containers.dev/features.
   "features": {
     // alpine-ohmyzsh
     "ghcr.io/cirolosapio/devcontainers-features/alpine-ohmyzsh:0": {
-      "plugins": "alias-tips zsh-interactive-cd bundler gh git npm rails rake rake-fast ruby ssh-agent starship zsh-navigation-tools"
+      "plugins": "alias-tips autoupdate bundler git npm rails rake rake-fast ruby ssh-agent starship zsh-autosuggestions zsh-interactive-cd zsh-navigation-tools zsh-syntax-highlighting"
     },
     // alpine-starship
     "ghcr.io/cirolosapio/devcontainers-features/alpine-starship:0": {}
@@ -73,7 +73,6 @@
         "ngouy.vscode-gemfile-infos",
         "pavlitsky.yard",
         "redhat.vscode-yaml",
-        "shopify.ruby-lsp",
         "tavo.rails-schema",
         "vunguyentuan.vscode-css-variables",
         "vunguyentuan.vscode-postcss",

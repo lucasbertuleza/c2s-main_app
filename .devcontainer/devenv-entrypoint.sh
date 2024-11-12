@@ -1,9 +1,6 @@
 #!/bin/zsh
 set -e
 
-# Save bash history inside
-echo "export HISTFILE=$(pwd)/.devcontainer/config/zsh_history" >> ~/.zshrc
-
 # see http://misc.flogisoft.com/bash/tip_colors_and_formatting
 function style() {
   printf "\e[$1m$2\e[0m"

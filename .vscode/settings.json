@@ -44,10 +44,6 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[erb]": { "editor.defaultFormatter": "manuelpuyol.erb-linter" },
-  "[gemfile][ruby]": {
-    "editor.guides.indentation": false,
-    "editor.defaultFormatter": "castwide.solargraph"
-  },
   "[log]": { "editor.largeFileOptimizations": false },
   "[yaml][yml]": {
     "diffEditor.ignoreTrimWhitespace": false,
@@ -121,6 +117,10 @@
   "yard.spacers.beforeTags": true,
   "yard.spacers.separateTags": true,
   "yard.tags.author": false,
-  "yard.tags.paramNameBeforeType": true
+  "yard.tags.paramNameBeforeType": true,
+  "[ruby]": {
+    "editor.guides.indentation": false,
+    "editor.defaultFormatter": "castwide.solargraph"
+  },
   /* Remote extensions (dynamically added) */
 }

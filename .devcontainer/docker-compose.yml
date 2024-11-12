@@ -11,7 +11,7 @@ services:
     #   dockerfile: .devcontainer/Dockerfile
 
     environment:
-      - STARSHIP_CONFIG=/home/${USER}/${COMPOSE_PROJECT_NAME}/.devcontainer/config/starship.toml
+      - STARSHIP_CONFIG=/home/rails/${COMPOSE_PROJECT_NAME}/.devcontainer/config/starship.toml
       - VISUAL=code --wait
 
     #volumes:
