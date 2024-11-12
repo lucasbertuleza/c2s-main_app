@@ -5,7 +5,7 @@ set -e
 rm -f /usr/src/app/tmp/pids/server.pid
 
 # Setup database
-bin/rails db:create; bin/rails db:migrate
+bin/rails db:prepare
 
 # Install npm packages in development mode
 if [ "$RAILS_ENV" = "development" ] && [ ! -d "node_modules" ]; then
