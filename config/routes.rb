@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
   mount Sidekiq::Web => '/job-monitor'
 
+  root "pages#sign_in"
+
   get  "sign-up",  to: "pages#sign_up"
   get  "sign-in",  to: "pages#sign_in"
   post "sign-up",  to: "sessions#sign_up"

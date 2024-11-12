@@ -38,6 +38,8 @@ module Session
 
   # @return [User, nil]
   def check_authorization
+    return nil unless session[:token]
+
     headers = {"content-type": "application/json", Authorization: session[:token]}
     res = Net::HTTP.post AUTHORIZATION_ENDPOINT, "", headers
     return nil unless res.code == "200"

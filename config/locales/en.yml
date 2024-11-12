@@ -35,6 +35,7 @@ en:
   pages:
     sign_in:
       title: "Login"
+      registration_link_html: 'Não possui cadastro? <a href="%{url}">Registre-se aqui.</a>'
     sign_up:
       title: "Registre-se"
   tasks:
