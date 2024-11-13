@@ -29,7 +29,7 @@ Dica: Permita que a aplicação envie alertas ao browser (uma notificação ser�
 - Docker Compose
 - Portas 3000 e 8080 disponíveis para uso
 - Serviço de notificação executando ([c2s-notification_service](https://github.com/lucasbertuleza/c2s-notification_service))
-- Serviço de autenticação executando ([c2s-autentication_service](https://github.com/lucasbertuleza/c2s-autentication_service))
+- Serviço de autenticação executando ([c2s-authentication_service](https://github.com/lucasbertuleza/c2s-authentication_service))
 - Serviço de web scraping executando ([c2s-webscraping_service](https://github.com/lucasbertuleza/c2s-webscraping_service))
 
 **Observação 1:** Talvez você encontre alguma dificuldade para fazer o build da aplicação caso esteja executando o Linux no Windows com o WSL. \
