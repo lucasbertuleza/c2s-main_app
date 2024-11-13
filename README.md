@@ -1,127 +1,70 @@
-# README
+# WebTasks
+<sup>Repositório parte do teste técnico da C2S.</sup>
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Esta aplicação web é oponto de entrada (sistema principal) para usuários gerenciarem suas tarefas de web scraping. No diagrama a seguir ela é representada na cor azul.
 
-Things you may want to cover:
+![c4_container](https://github.com/user-attachments/assets/de1c731c-49d9-4a8a-b7d8-83533e09d18f)
 
-- Ruby version
+O diagrama C4 apresenta uma visão geral da arquitetura da aplicação que é composta por mais 3 serviços:
 
-- System dependencies
+- serviço de autenticação/autorização (cinza)
+- serviço de notificação (vermelho)
+- serviço de web scraping (verde)
 
-- Configuration
+A comunicação entre a webapp e o serviço de web scraping é feito através de um Message Broker (RabbitMQ). Cada tópico (representado na cor laranja) está associado a uma fila que corresponde a um status da tarefa.
 
-- Database creation
+## Fluxo de execução
 
-- Database initialization
+1. O usuário cria/atualiza uma tarefa por meio da webapp e então uma requisição HTTP é enviada ao serviço de notificação
+2. Caso o serviço de notificação confirme o recebimento (resposta com status `ok`), a webapp publica uma mensagem na fila de tarefas pendentes contendo os dados da tarefa
+3. O serviço de scraping vai consumir as mensagens da fila e publicará uma mensagem indicando o início do processamento de determinada tarefa
+4. Ao concluir, enviará uma requisição HTTP ao serviço de notificação com o resultado do processamento e, caso o serviço confirme o recebimento (respota com status `ok`), publicará uma mensagem na fila que corresponde ao status final da tarefa (sucesso ou falha), caso contrário, um `nack` é enviado ao broker recolocando a tarefa na fila pendentes
+5. A webapp consome as mensagens enviadas pelo serviço scraping e atualiza o status das tarefas em tempo real, sem a necessidade de recarregar a página
 
-- How to run the test suite
+Dica: Permita que a aplicação envie alertas ao browser (uma notificação será exibida sempre que uma tarefa for finalizada).
 
-- Services (job queues, cache servers, search engines, etc.)
+## Dependências
 
-- Deployment instructions
+- Docker
+- Docker Compose
+- Portas 3000 e 8080 disponíveis para uso
+- Serviço de notificação executando ([c2s-notification_service](https://github.com/lucasbertuleza/c2s-notification_service))
+- Serviço de autenticação executando ([c2s-autentication_service](https://github.com/lucasbertuleza/c2s-autentication_service))
+- Serviço de web scraping executando ([c2s-webscraping_service](https://github.com/lucasbertuleza/c2s-webscraping_service))
 
-- ...
+**Observação 1:** Talvez você encontre alguma dificuldade para fazer o build da aplicação caso esteja executando o Linux no Windows com o WSL. \
+**Observação 2:** Se você utiliza o compose como plugin, utilize `docker-compose` ao invés de `docker compose` ao executar os comandos.
 
-# para ver o log completo do build
+## Build
 
-docker-compose build --progress plain
+Caso você tenha o utilitário `make` instalado, basta executar o seguinte comando na raiz do projeto:
 
-# AMBIENTE DE DESENVOLVIMENTO REMOTO
-
-https://code.visualstudio.com/docs/devcontainers/attach-container#_attached-container-configuration-files
-
-1. Copie o objeto JSON abaixo
-2. F1 > Dev Containers: Open Attached Container Configuration File...
-3. Selecione o nome da imagem/container na lista
-4. Cole o conteúdo dentro do arquivo e salve
-
-Pronto. Ao anexar no contâniner em execução, o preset será carregado.
-
-# ATIVAR WEB-CONSOLE NO DOCKER (PARA RAILS 5+)
-
-**config/development.rb**
-
-```ruby
-require 'socket'
-require 'ipaddr'
-
-config.web_console.whitelisted_ips = Socket.ip_address_list.reduce([]) do |res, addrinfo|
-  addrinfo.ipv4? ? res << IPAddr.new(addrinfo.ip_address).mask(24) : res
-end
+```sh
+make build
 ```
-# REFERÊNCIAS
 
-- https://github.com/csstools/postcss-plugins/tree/main/plugins/postcss-custom-media
-- https://bibwild.wordpress.com/2022/11/29/vite-ruby-for-js-css-asset-management-in-rails/
-- https://maximomussini.com/posts/a-rubyist-guide-to-vite-js
-- https://davidteren.medium.com/ruby-on-rails-7-high-performance-frontend-with-esbuild-rollup-vite-7712dea1917e
-- https://dev.to/davidteren/ruby-on-rails-7-high-performance-frontend-development-with-esbuild-rollup-vite-2onj
-- https://dev.to/pappijx/effortlessly-setting-up-your-react-project-with-vite-husky-typescript-and-eslint-a-comprehensive-guide-n5l
-- https://luby.com.br/desenvolvimento/software/como-criar-um-projeto-com-vite/
-- https://dev.to/buhrmi/setting-up-a-new-rails-7-app-with-vite-inertia-and-svelte-c9e
+Caso contrário:
 
-**TypeScript**
+```sh
+cp .env.example .env
+docker compose build
+```
 
-- https://duncanleung.com/eslint-mixed-javascript-typescript-files-codebase/
-- https://www.robinwieruch.de/vite-typescript/
-- https://ryanbigg.com/2023/06/rails-7-react-typescript-setup
-- https://www.honeybadger.io/blog/typescript-rails/
+## Executando a aplicação
 
-**Plugins**
+⚠️ **Atenção!** \
+Esta aplicação têm como dependência outros 3 serviços que devem estar em execução para que a aplicação execute corretamente. Veja a seção [Dependências](#dependências).
 
-- https://js-from-routes.netlify.app/
+```bash
+make up
+# ou
+docker compose up -d
+```
 
-**Templates**
+Verifique o status (**Up**) de todos os containers para garantir que não houve qualquer problema:
 
-- https://github.com/mattbrictson/rails-template
-- https://github.com/zakariaf/rails-base-app
-- https://github.com/BrandonShar/inertia-rails-template
-- https://github.com/PhilVargas/vite-on-rails/tree/main
-- https://github.com/templatus/templatus-vue
-- https://github.com/ElMassimo/inertia-rails-ssr-template
-- https://vuejsfeed.com/blog/templatus-vue-vue-3-and-ruby-on-rails-starter-template
-- https://sasikala-r.medium.com/rails-7-with-vite-stimulus-tailwind-c3ecf2191ea9
-- https://egghead.io/blog/rails-graphql-typescript-react-apollo
+```bash
+docker compose ps -a --format "table {{.Name}}\t{{.Status}}"
+```
 
-**Para ler**
-
-- https://www.freecodecamp.org/news/what-is-postcss/
-- https://github.com/airbnb/ruby
-- https://evilmartians.com/chronicles/vite-lizing-rails-get-live-reload-and-hot-replacement-with-vite-ruby
-- https://codeando.dev/posts/rails-inertiajs/
-
-**Outros**
-
-- https://dev.to/anukr98/setting-up-eslint-with-tsjs-in-your-react-project-in-2023-57o
-- https://dev-yakuza.posstree.com/en/react-native/eslint-prettier-husky-lint-staged/#use-eslint-and-prettier-like-pro
-- https://github.com/pappijx/Vite-react-eslint-prettier-husky-setup
-- https://medium.com/@noe.abarai20/efficient-react-project-setup-with-vite-eslint-prettier-and-husky-22b683a01b53
-- https://leandroaps.medium.com/setting-up-eslint-prettier-and-husky-in-a-typescript-based-react-18-project-a-comprehensive-8a87b91d5a28
-- https://www.thisdot.co/blog/linting-formatting-and-type-checking-commits-in-an-nx-monorepo-with-husky/
-
-**TODO**
-
-- https://thoughtbot.com/blog/a-standard-way-to-lint-your-views
-
-# POST INSTALL
-- bundle exec rails g rspec:install
-- bundle exec rails g bullet:install
-- bundle exec rails g draper:install
-- bundle exec vite install
-- bundle exec rails_best_practices -g
-
-**Reek**
-https://www.youtube.com/watch?v=pazYe7WRWRU
-https://github.com/troessner/reek/blob/master/docs/Reek-Driven-Development.md
-
-**Brakeman**
-https://github.com/presidentbeef/brakeman/blob/main/OPTIONS.md#configuration-files
-
-# Ativando Extensão Ruby LSP no VSCode
-1. Inicie o contêiner de desenvolvimento: Ctrl+Shift+P > Reabrir no contêiner
-2. No terminal do Host execute o comando `docker-compose exec --user=root app ash -c "apk add --update --no-cache build-base"`
-3. No VSCode, recarregue a janela: Ctrl+Shift+P > Recarregar janela
-
-# REFS
-- https://www.gnu.org/software/bash/manual/html_node/Bash-Conditional-Expressions.html
+Acesse a URL https://localhost:3000 e confirme ao navegador que confia no certificado autoassinado para continuar. Isso é necessário porque a aplicação está com o TLS ativado e disponível apenas sob HTTPS.
